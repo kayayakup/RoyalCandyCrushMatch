@@ -49,7 +49,7 @@ public class DifficultyManager : MonoBehaviour
 
     private static int CalcTarget(int l)
     {
-        float raw = 800f + (l - 1f) * 420f + Mathf.Pow(l, 1.35f) * 60f;
+        float raw = PlayerPrefs.GetInt("BestScore_v2") + (l - 1f) * 420f + Mathf.Pow(l, 1.35f) * 60f;
         return Mathf.RoundToInt(raw / 100f) * 100;
     }
 

@@ -18,10 +18,10 @@ public static class GameConstants
     public const float DUR_POPUP  = 0.85f;
 
     // ── Scoring ───────────────────────────────────────────────
-    public const int   SCORE_3      = 30;
-    public const int   SCORE_4      = 80;
-    public const int   SCORE_5      = 200;
-    public const int   SCORE_6PLUS  = 400;
+    public const int   SCORE_3      = 3;
+    public const int   SCORE_4      = 8;
+    public const int   SCORE_5      = 20;
+    public const int   SCORE_6PLUS  = 40;
     public const float CASCADE_MULT = 0.5f;
 
     // ── Sorting orders ────────────────────────────────────────
