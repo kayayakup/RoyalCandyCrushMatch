@@ -64,6 +64,9 @@ public class GameManager : MonoBehaviour
         var save = SaveSystem.Load();
         if (save == null) { StartNewGame(); return; }
 
+        _state = GameState.Animating;
+        _input.SetEnabled(false);
+
         ScoreManager.Instance.RestoreFromSave(save.score, save.bestScore, save.level);
 
         _cfg = DifficultyManager.Instance.GetConfig(save.level);

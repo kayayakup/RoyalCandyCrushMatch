@@ -30,6 +30,41 @@ public class GridManager : MonoBehaviour
 
     private void Awake() => Instance = this;
 
+    private void Start()
+    {
+        var frameSprite = Bootstrap.GlobalGridFrameSprite;
+        if (frameSprite != null)
+        {
+            var go = new GameObject("GridFrame");
+            go.transform.SetParent(transform);
+
+            // Center of the grid is horizontally 0, vertically GridOffsetY
+            go.transform.position = new Vector3(0f, GridOffsetY, 0f);
+
+            var sr = go.AddComponent<SpriteRenderer>();
+            sr.sprite = frameSprite;
+            sr.sortingOrder = GameConstants.SORT_TILE - 1; // Behind tiles
+
+            float gridW = W * GameConstants.TILE_SPACING;
+            float gridH = H * GameConstants.TILE_SPACING;
+            sr.color = new Color(1f, 1f, 1f, 0.85f);
+
+            // Set sliced drawing so it wraps the grid neatly if designed as a 9-sliced sprite
+            if (frameSprite.border != Vector4.zero)
+            {
+                sr.drawMode = SpriteDrawMode.Sliced;
+                sr.size = new Vector2(gridW + 0.2f, gridH + 0.2f);
+            }
+            else
+            {
+                // For simple sprites, use scale to fit the grid area
+                Vector2 spriteSize = frameSprite.bounds.size;
+                go.transform.localScale = new Vector3((gridW + 1f) / spriteSize.x, 
+                                                      (gridH + 1f) / spriteSize.y, 1f);
+            }
+        }
+    }
+
     // ── Coordinate conversion ────────────────────────────────
     // CellToWorld and WorldToCell MUST use the same GridOffsetY so that
     // a screen tap on a tile maps back to that tile's grid cell.

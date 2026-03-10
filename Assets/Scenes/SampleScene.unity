@@ -164,14 +164,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Bootstrap
   TileSprites:
-  - {fileID: -2359638610136418311, guid: 1b56b17d63c5a57448ce9e5b86c7f3b0, type: 3}
-  - {fileID: 282475422764796231, guid: e0bb515cfd8189348b07382b2505e56d, type: 3}
-  - {fileID: 4950895985797454319, guid: 6b3d6c479b8d519409aa2f032bc720a3, type: 3}
-  - {fileID: 5237724917413910561, guid: 0dfc842c5dc65cf499d1ad3c45028a80, type: 3}
-  - {fileID: -6162386545576583919, guid: a7a4cdc28aefdc04b8f659b412bf3db0, type: 3}
-  - {fileID: -1190126840562695661, guid: 44b90213ca5071c4392ef7939d1a1812, type: 3}
-  - {fileID: -262344779982510406, guid: 4d3914ce564bb224bb2b26836140dd9c, type: 3}
-  - {fileID: -9150612762883975836, guid: bc9ca43a81a9fee40bc97fc6fe93d9b9, type: 3}
+  - {fileID: 8574053849961045352, guid: 723955575c9b0d4459919e105b74aded, type: 3}
+  - {fileID: -3711317316295758182, guid: 527ddafd536e12947b65b5e3bde5e9bc, type: 3}
+  - {fileID: -8670075659805069833, guid: 29463624a9ad26b41a7c80fd9c8580ad, type: 3}
+  - {fileID: -5927576012072786199, guid: 46156001f73bf91458160f7d307574fa, type: 3}
+  - {fileID: 8966658082388042391, guid: cf82c792215d674419948c7ef6918489, type: 3}
+  - {fileID: 7168053496937522366, guid: f961deac5d9628845889c974b0610f2f, type: 3}
+  BackgroundSprites:
+  - {fileID: -7019374914716279668, guid: 439f2204b87005149bad26471fcfdc00, type: 3}
+  - {fileID: -687430145256113278, guid: 1abb26054cb343e46867c65301a0b571, type: 3}
+  - {fileID: -6289697335507042822, guid: cc8759c4d23f5004288db64eaa8db8b5, type: 3}
+  - {fileID: -92040797421207118, guid: 9e54ac1fa896b58438597ad76f259564, type: 3}
+  - {fileID: -5516759974447932793, guid: b42a8f6c22e308a479b3556682e238d1, type: 3}
+  - {fileID: 4983005964494478234, guid: 39e1125bc4cae7f4d90f04b2d2823361, type: 3}
+  - {fileID: 7094585056591898875, guid: c12f2ae54ca24874895ab3cc68169e39, type: 3}
+  - {fileID: 2001733143951058542, guid: a81ac9385a07530418910739fb6eda2c, type: 3}
+  - {fileID: -6155111543462330606, guid: 4ef808d50f7ae004989477528bb3dc0a, type: 3}
+  - {fileID: -4848547477533630556, guid: 8c4c35fbc7186834d84ff9653ae9df35, type: 3}
+  GridFrameSprite: {fileID: -3893057473318805091, guid: cde0f4c2e1489ba48b6220e128e9064a, type: 3}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0

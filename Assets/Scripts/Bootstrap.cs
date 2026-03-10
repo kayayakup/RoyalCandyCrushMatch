@@ -15,6 +15,14 @@ public class Bootstrap : MonoBehaviour
     // Static accessor so Tile.cs can read the sprites without a direct reference
     public static Sprite[] GlobalTileSprites { get; private set; }
 
+    [Header("Background Sprites (optional)")]
+    public Sprite[] BackgroundSprites;
+    public static Sprite[] GlobalBackgroundSprites { get; private set; }
+
+    [Header("Grid Frame (optional)")]
+    public Sprite GridFrameSprite;
+    public static Sprite GlobalGridFrameSprite { get; private set; }
+
     // ── Runtime references ────────────────────────────────────
     private Camera _cam;
 
@@ -25,6 +33,8 @@ public class Bootstrap : MonoBehaviour
 
         // Expose sprites globally before any Tile is created
         GlobalTileSprites = TileSprites;
+        GlobalBackgroundSprites = BackgroundSprites;
+        GlobalGridFrameSprite = GridFrameSprite;
 
         // 1. Camera (must be first so GridManager can compute world offsets)
         _cam = CreateCamera();
@@ -86,8 +96,8 @@ public class Bootstrap : MonoBehaviour
         float gridW  = GameConstants.GRID_WIDTH  * GameConstants.TILE_SPACING;
         float aspect = (float)Screen.width / Mathf.Max(Screen.height, 1);
 
-        float byH = gridH * 0.5f + 2.6f;          // vertical padding for HUD + safe area
-        float byW = gridW / (2f * aspect) + 0.6f;
+        float byH = gridH * 0.5f + 3.6f;          // vertical padding for HUD + safe area
+        float byW = gridW / (2f * aspect) + 1.6f;
         return Mathf.Max(byH, byW);
     }
 

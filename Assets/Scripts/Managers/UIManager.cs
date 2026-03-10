@@ -45,8 +45,7 @@ public class UIManager : MonoBehaviour
     // ── Score pulse coroutine handle ─────────────────────────
     private Coroutine _scorePulseCo;
 
-    // ── Background image (animated) ──────────────────────────
-    private Image _bgImage;
+
 
     // ── Canvas root ─────────────────────────────────────────
     private Canvas _canvas;
@@ -58,8 +57,8 @@ public class UIManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        StartCoroutine(AnimateCameraBackground());
         BuildCanvas();
+        BuildBackgroundCanvas();
         BuildSafeAreaPanel();
         BuildHUD();
         BuildMainMenu();
@@ -68,30 +67,7 @@ public class UIManager : MonoBehaviour
         ShowMainMenu();
     }
 
-    private static IEnumerator AnimateCameraBackground()
-    {
-        Color[] cols = {
-        new Color(0.06f, 0.03f, 0.14f),
-        new Color(0.03f, 0.06f, 0.18f),
-        new Color(0.08f, 0.03f, 0.16f),
-        new Color(0.04f, 0.08f, 0.20f)
-    };
-        int idx = 0;
-        while (true)
-        {
-            Color from = cols[idx % cols.Length];
-            Color to = cols[(idx + 1) % cols.Length];
-            float t = 0f;
-            while (t < 1f)
-            {
-                t += Time.deltaTime / 5f;
-                if (Camera.main != null)
-                    Camera.main.backgroundColor = Color.Lerp(from, to, t);
-                yield return null;
-            }
-            idx++;
-        }
-    }
+
 
     // ── Public API ───────────────────────────────────────────
     public void ShowMainMenu()
@@ -172,15 +148,46 @@ public class UIManager : MonoBehaviour
         go.AddComponent<GraphicRaycaster>();
     }
 
-    // ── Animated background ──────────────────────────────────
-    private void BuildAnimatedBackground()
+    private Canvas _bgCanvas;
+    private Image _bgCrossfade1;
+    private Image _bgCrossfade2;
+
+    private void BuildBackgroundCanvas()
     {
-        var go = MakeFullRect("Background", _canvas.transform);
-        _bgImage = go.AddComponent<Image>();
-        _bgImage.color = new Color(0.06f, 0.03f, 0.14f);
-        go.GetComponent<RectTransform>().SetAsFirstSibling(); // behind everything
-        StartCoroutine(AnimateBackground());
+        var go = new GameObject("BgCanvas");
+        _bgCanvas = go.AddComponent<Canvas>();
+        _bgCanvas.renderMode = RenderMode.ScreenSpaceCamera;
+        _bgCanvas.worldCamera = Camera.main;
+        _bgCanvas.planeDistance = 10f;
+        _bgCanvas.sortingOrder = GameConstants.SORT_BG - 1; // Orbs are on same canvas, behind grid
+
+        var cs = go.AddComponent<CanvasScaler>();
+        cs.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
+        cs.referenceResolution = new Vector2(1080, 1920);
+        cs.matchWidthOrHeight = 0.5f;
+
+        var sprites = Bootstrap.GlobalBackgroundSprites;
+        if (sprites != null && sprites.Length > 0)
+        {
+            var bg1Go = MakeFullRect("BgCrossfade1", go.transform);
+            _bgCrossfade1 = bg1Go.AddComponent<Image>();
+            _bgCrossfade1.sprite = sprites[0];
+            _bgCrossfade1.color = Color.white;
+            _bgCrossfade1.preserveAspect = false;
+
+            var bg2Go = MakeFullRect("BgCrossfade2", go.transform);
+            _bgCrossfade2 = bg2Go.AddComponent<Image>();
+            _bgCrossfade2.color = new Color(1f, 1f, 1f, 0f);
+            _bgCrossfade2.preserveAspect = false;
+
+            if (sprites.Length > 1)
+                StartCoroutine(CrossfadeBackgroundSprites(sprites));
+        }
+
+        BuildFloatingOrbs(go.transform, 14);
     }
+
+
 
     // ── Safe-area panel (all interactive content lives here) ─
     private void BuildSafeAreaPanel()
@@ -214,7 +221,7 @@ public class UIManager : MonoBehaviour
         barRT.anchorMax = new Vector2(1f, 1f);
         barRT.pivot = new Vector2(0.5f, 1f);
         barRT.anchoredPosition = Vector2.zero;
-        barRT.sizeDelta = new Vector2(0f, 96f);
+        barRT.sizeDelta = new Vector2(0f, 192f);
 
         // Gradient illusion: dark bar with a coloured left strip
         barRT.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.75f);
@@ -230,21 +237,21 @@ public class UIManager : MonoBehaviour
 
         // Score (left)
         _scoreTxt = MakeTMPStretch("ScoreTxt", barRT,
-                                    "<b>0</b>\n<size=65%>SCORE</size>", 36f,
+                                    "<b>0</b>\n<size=65%>SCORE</size>", 72f,
                                     0f, 0f, 0.33f, 1f, 8f, 6f, -4f, -6f);
         _scoreTxt.alignment = TextAlignmentOptions.Center;
         _scoreTxt.color = new Color(1f, 0.92f, 0.28f);
 
         // Level (centre)
         _levelTxt = MakeTMPStretch("LevelTxt", barRT,
-                                    "<size=70%>LEVEL</size>\n<b>1</b>", 36f,
+                                    "<size=70%>LEVEL</size>\n<b>1</b>", 72f,
                                     0.33f, 0f, 0.67f, 1f, 0f, 6f, 0f, -6f);
         _levelTxt.alignment = TextAlignmentOptions.Center;
         _levelTxt.color = Color.white;
 
         // Best (right)
         _bestTxt = MakeTMPStretch("BestTxt", barRT,
-                                   "<b>0</b>\n<size=65%>BEST</size>", 36f,
+                                   "<b>0</b>\n<size=65%>BEST</size>", 72f,
                                    0.67f, 0f, 1f, 1f, 4f, 6f, -8f, -6f);
         _bestTxt.alignment = TextAlignmentOptions.Center;
         _bestTxt.color = new Color(0.6f, 1f, 0.6f);
@@ -254,12 +261,12 @@ public class UIManager : MonoBehaviour
         tgtRT.anchorMin = new Vector2(0f, 1f);
         tgtRT.anchorMax = new Vector2(1f, 1f);
         tgtRT.pivot = new Vector2(0.5f, 1f);
-        tgtRT.anchoredPosition = new Vector2(0f, -96f);
-        tgtRT.sizeDelta = new Vector2(0f, 38f);
+        tgtRT.anchoredPosition = new Vector2(0f, -192f);
+        tgtRT.sizeDelta = new Vector2(0f, 76f);
         tgtRT.gameObject.AddComponent<Image>().color = new Color(0f, 0f, 0f, 0.45f);
 
         _targetTxt = MakeTMPStretch("TargetTxt", tgtRT,
-                                     "Target: <b>1000</b>", 24f,
+                                     "Target: <b>1000</b>", 48f,
                                      0f, 0f, 0.55f, 1f, 10f, 2f, -4f, -2f);
         _targetTxt.alignment = TextAlignmentOptions.MidlineLeft;
         _targetTxt.color = new Color(1f, 0.92f, 0.28f);
@@ -296,7 +303,7 @@ public class UIManager : MonoBehaviour
 
         // ── Title ───────────────────────────────────────────
         var title = MakeTMPCentre("Title", _mainMenuPanel.transform,
-                                   "CANDY\nCRUSH", 116f, 0f, 280f, 820f, 310f);
+                                   "CANDY\nCRUSH", 116f, 0f, 200f, 820f, 310f);
         title.alignment = TextAlignmentOptions.Center;
         title.fontStyle = FontStyles.Bold | FontStyles.Italic;
         title.color = new Color(1f, 0.88f, 0.08f);
@@ -336,21 +343,31 @@ public class UIManager : MonoBehaviour
         bestDisp.alignment = TextAlignmentOptions.Center;
         bestDisp.color = new Color(0.75f, 1f, 0.75f, 0.9f);
 
-        // ── CONTINUE button (visible only when save exists) ──
-        _continueBtn = MakeButtonGO("CONTINUE", _mainMenuPanel.transform,
+        bool hasSave = SaveSystem.HasSave();
+
+        // ── START button (only if save exists) ──
+        _continueBtn = MakeButtonGO("START", _mainMenuPanel.transform,
                                      new Color(0.18f, 0.65f, 0.90f),
                                      new Vector2(0f, -140f), new Vector2(440f, 100f));
+
         _continueBtn.GetComponentInChildren<Button>().onClick.AddListener(
             () => OnContinueGame?.Invoke());
-        _continueBtn.SetActive(SaveSystem.HasSave());
+
+        _continueBtn.SetActive(hasSave);
+
         StartCoroutine(PulseGameObject(_continueBtn.transform, 2.0f, 0.03f));
 
-        // ── NEW GAME button ──────────────────────────────────
+
+        // ── NEW GAME button (only first install) ──
         var newGameBtn = MakeButtonGO("NEW GAME", _mainMenuPanel.transform,
                                        new Color(0.15f, 0.72f, 0.30f),
                                        new Vector2(0f, -260f), new Vector2(440f, 100f));
+
         newGameBtn.GetComponentInChildren<Button>().onClick.AddListener(
             () => OnStartNewGame?.Invoke());
+
+        newGameBtn.SetActive(!hasSave);
+
         StartCoroutine(PulseGameObject(newGameBtn.transform, 2.2f, 0.03f));
     }
 
@@ -412,7 +429,7 @@ public class UIManager : MonoBehaviour
     }
 
     // ── Floating orbs (main menu ambiance) ───────────────────
-    private void BuildFloatingOrbs(Transform parent, int count)
+    public void BuildFloatingOrbs(Transform parent, int count)
     {
         Color[] cc = {
             new Color(1f,.25f,.25f,.0f), new Color(.3f,.55f,1f,.0f),
@@ -495,27 +512,29 @@ public class UIManager : MonoBehaviour
     }
 
     // ── Animation coroutines ─────────────────────────────────
-    private IEnumerator AnimateBackground()
+    private IEnumerator CrossfadeBackgroundSprites(Sprite[] sprites)
     {
-        Color[] cols = {
-            new Color(0.06f, 0.03f, 0.14f),
-            new Color(0.03f, 0.06f, 0.18f),
-            new Color(0.08f, 0.03f, 0.16f),
-            new Color(0.04f, 0.08f, 0.20f)
-        };
         int idx = 0;
         while (true)
         {
-            Color from = cols[idx % cols.Length];
-            Color to = cols[(idx + 1) % cols.Length];
+            yield return new WaitForSeconds(6f); // 6 seconds per image
+
+            int nextIdx = (idx + 1) % sprites.Length;
+            _bgCrossfade2.sprite = sprites[nextIdx];
+
             float t = 0f;
             while (t < 1f)
             {
-                t += Time.deltaTime / 5f;
-                if (_bgImage) _bgImage.color = Color.Lerp(from, to, EaseInOutSine(Mathf.Clamp01(t)));
+                t += Time.deltaTime / 1.5f; // 1.5s crossfade duration
+                _bgCrossfade2.color = new Color(1f, 1f, 1f, Mathf.Clamp01(t));
                 yield return null;
             }
-            idx++;
+
+            _bgCrossfade1.sprite = sprites[nextIdx];
+            _bgCrossfade1.color = Color.white;
+            _bgCrossfade2.color = new Color(1f, 1f, 1f, 0f);
+
+            idx = nextIdx;
         }
     }
 
