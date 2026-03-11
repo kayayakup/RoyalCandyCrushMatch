@@ -28,6 +28,7 @@ public class Bootstrap : MonoBehaviour
 
     private void Awake()
     {
+        GoogleAdMobController.Instance.LoadBanner();
         Application.targetFrameRate = 60;
         Screen.sleepTimeout         = SleepTimeout.NeverSleep;
 

@@ -96,7 +96,10 @@ public class GameManager : MonoBehaviour
         _ui.UpdateLevel (level);
         _ui.UpdateTarget(_cfg.TargetScore);
 
-        StartCoroutine(EnableInputAfter(0.55f));
+        StartCoroutine(EnableInputAfter(0.25f));
+
+        GoogleAdMobController.Instance.LoadBanner();
+        GoogleAdMobController.Instance.ShowInterstitialAd();
     }
 
     private IEnumerator EnableInputAfter(float delay)
