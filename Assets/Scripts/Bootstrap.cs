@@ -28,7 +28,6 @@ public class Bootstrap : MonoBehaviour
 
     private void Awake()
     {
-        GoogleAdMobController.Instance.LoadBanner();
         Application.targetFrameRate = 60;
         Screen.sleepTimeout         = SleepTimeout.NeverSleep;
 
@@ -56,6 +55,11 @@ public class Bootstrap : MonoBehaviour
         var ui    = Spawn<UIManager>   ("UIManager");
         var gm    = Spawn<GameManager> ("GameManager");
         gm.Inject(input, ui);
+    }
+
+    private void Start()
+    {
+        GoogleAdMobController.Instance.LoadBanner();
     }
 
     // ─────────────────────────────────────────────────────────

@@ -8,11 +8,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
 
-    private GameState   _state = GameState.MainMenu;
+    private GameState _state = GameState.MainMenu;
     private LevelConfig _cfg;
 
     private InputHandler _input;
-    private UIManager    _ui;
+    private UIManager _ui;
 
     private void Awake() => Instance = this;
 
@@ -20,20 +20,20 @@ public class GameManager : MonoBehaviour
     public void Inject(InputHandler input, UIManager ui)
     {
         _input = input;
-        _ui    = ui;
+        _ui = ui;
 
         // UI callbacks
-        _ui.OnStartNewGame  += StartNewGame;
-        _ui.OnContinueGame  += ContinueGame;
+        _ui.OnStartNewGame += StartNewGame;
+        _ui.OnContinueGame += ContinueGame;
         _ui.OnRestartPressed += RestartGame;
 
         // Input
         _input.OnSwipeDetected += HandleSwipe;
 
         // Grid events
-        GridManager.Instance.OnMatchScored     += HandleMatchScored;
+        GridManager.Instance.OnMatchScored += HandleMatchScored;
         GridManager.Instance.OnCascadeComplete += HandleCascadeComplete;
-        GridManager.Instance.OnNoMovesLeft     += HandleNoMoves;
+        GridManager.Instance.OnNoMovesLeft += HandleNoMoves;
     }
 
     // ── Save on app pause / focus loss ───────────────────────
@@ -73,9 +73,9 @@ public class GameManager : MonoBehaviour
         GridManager.Instance.RestoreGrid(_cfg, save.gridTypes, save.gridObstacles);
 
         _ui.ShowHUD();
-        _ui.UpdateScore (_score);
-        _ui.UpdateBest  (ScoreManager.Instance.BestScore);
-        _ui.UpdateLevel (ScoreManager.Instance.CurrentLevel);
+        _ui.UpdateScore(_score);
+        _ui.UpdateBest(ScoreManager.Instance.BestScore);
+        _ui.UpdateLevel(ScoreManager.Instance.CurrentLevel);
         _ui.UpdateTarget(_cfg.TargetScore);
 
         StartCoroutine(EnableInputAfter(0.55f));
@@ -91,15 +91,16 @@ public class GameManager : MonoBehaviour
         GridManager.Instance.BuildGrid(_cfg);
 
         _ui.ShowHUD();
-        _ui.UpdateScore (_score);
-        _ui.UpdateBest  (ScoreManager.Instance.BestScore);
-        _ui.UpdateLevel (level);
+        _ui.UpdateScore(_score);
+        _ui.UpdateBest(ScoreManager.Instance.BestScore);
+        _ui.UpdateLevel(level);
         _ui.UpdateTarget(_cfg.TargetScore);
 
         StartCoroutine(EnableInputAfter(0.25f));
 
         GoogleAdMobController.Instance.LoadBanner();
-        GoogleAdMobController.Instance.ShowInterstitialAd();
+        if (level > 3)
+            GoogleAdMobController.Instance.ShowInterstitialAd();
     }
 
     private IEnumerator EnableInputAfter(float delay)
@@ -138,7 +139,7 @@ public class GameManager : MonoBehaviour
     {
         ScoreManager.Instance.AddScore(pts);
         _ui.UpdateScore(_score);
-        _ui.UpdateBest (ScoreManager.Instance.BestScore);
+        _ui.UpdateBest(ScoreManager.Instance.BestScore);
         _ui.SpawnScorePopup(pts, worldPos);
     }
 
@@ -164,7 +165,7 @@ public class GameManager : MonoBehaviour
         AudioGenerator.Instance?.PlayLevelUp();
         ParticleEffectManager.Instance?.PlayLevelUpBurst(
             GridManager.Instance.CellToWorld(
-                GameConstants.GRID_WIDTH  / 2,
+                GameConstants.GRID_WIDTH / 2,
                 GameConstants.GRID_HEIGHT / 2));
 
         _ui.ShowLevelComplete(ScoreManager.Instance.CurrentLevel);
@@ -199,11 +200,11 @@ public class GameManager : MonoBehaviour
 
         SaveSystem.Save(new SaveData
         {
-            valid        = true,
-            level        = ScoreManager.Instance.CurrentLevel,
-            score        = ScoreManager.Instance.CurrentScore,
-            bestScore    = ScoreManager.Instance.BestScore,
-            gridTypes    = types,
+            valid = true,
+            level = ScoreManager.Instance.CurrentLevel,
+            score = ScoreManager.Instance.CurrentScore,
+            bestScore = ScoreManager.Instance.BestScore,
+            gridTypes = types,
             gridObstacles = obs
         });
 

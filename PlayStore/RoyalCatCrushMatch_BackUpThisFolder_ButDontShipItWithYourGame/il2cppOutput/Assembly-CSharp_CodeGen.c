@@ -39,6 +39,7 @@ extern void Bootstrap_set_GlobalBackgroundSprites_mAF37886BCBD40223B8DF8EDB445DB
 extern void Bootstrap_get_GlobalGridFrameSprite_mC32260F4B050961E8E2189E050F6EA7BC4E6188C (void);
 extern void Bootstrap_set_GlobalGridFrameSprite_m80DFB56E7EA99CFFED6CA613C215D4EFF9F3ADFB (void);
 extern void Bootstrap_Awake_m3A98E5A3AE6FF9E488B1067D55A598F3351B1DAA (void);
+extern void Bootstrap_Start_m558BFAFF8FA870934D282A11272D2093487324CD (void);
 extern void Bootstrap_get_MainCamera_m0B9FC5893F6E7783C93A91B27368ABFEFB47F8CF (void);
 extern void Bootstrap_set_MainCamera_mE1CFD0FC38F3DA192A33F6712E8FAA1E51D0661E (void);
 extern void Bootstrap_CreateCamera_mFFD1D4489F421A876AA657F5FF0F94376699AF49 (void);
@@ -654,7 +655,7 @@ extern void U3CWarpTextU3Ed__8_MoveNext_mCE7A826C5E4854C2C509C77BD18F5A9B6D691B0
 extern void U3CWarpTextU3Ed__8_System_Collections_Generic_IEnumeratorU3CSystem_ObjectU3E_get_Current_mD80368E9B7E259311C03E406B75161ED6F7618E3 (void);
 extern void U3CWarpTextU3Ed__8_System_Collections_IEnumerator_Reset_m07746C332D2D8CE5DEA59873C26F2FAD4B369B42 (void);
 extern void U3CWarpTextU3Ed__8_System_Collections_IEnumerator_get_Current_m71D7F84D9DEF63BEC6B44866515DDCF35B142A19 (void);
-static Il2CppMethodPointer s_methodPointers[649] = 
+static Il2CppMethodPointer s_methodPointers[650] = 
 {
 	AudioGenerator_get_Instance_mC2D6888474B994E31F3928A9E953E6FC81F49EE5,
 	AudioGenerator_set_Instance_mEEA7B40F0AAEB343DF00D977F9BCF40837DAD582,
@@ -688,6 +689,7 @@ static Il2CppMethodPointer s_methodPointers[649] =
 	Bootstrap_get_GlobalGridFrameSprite_mC32260F4B050961E8E2189E050F6EA7BC4E6188C,
 	Bootstrap_set_GlobalGridFrameSprite_m80DFB56E7EA99CFFED6CA613C215D4EFF9F3ADFB,
 	Bootstrap_Awake_m3A98E5A3AE6FF9E488B1067D55A598F3351B1DAA,
+	Bootstrap_Start_m558BFAFF8FA870934D282A11272D2093487324CD,
 	NULL,
 	Bootstrap_get_MainCamera_m0B9FC5893F6E7783C93A91B27368ABFEFB47F8CF,
 	Bootstrap_set_MainCamera_mE1CFD0FC38F3DA192A33F6712E8FAA1E51D0661E,
@@ -1306,7 +1308,7 @@ static Il2CppMethodPointer s_methodPointers[649] =
 	U3CWarpTextU3Ed__8_System_Collections_IEnumerator_Reset_m07746C332D2D8CE5DEA59873C26F2FAD4B369B42,
 	U3CWarpTextU3Ed__8_System_Collections_IEnumerator_get_Current_m71D7F84D9DEF63BEC6B44866515DDCF35B142A19,
 };
-static const int32_t s_InvokerIndices[649] = 
+static const int32_t s_InvokerIndices[650] = 
 {
 	26873,
 	25668,
@@ -1339,6 +1341,7 @@ static const int32_t s_InvokerIndices[649] =
 	25668,
 	26873,
 	25668,
+	15372,
 	15372,
 	-1,
 	26873,
@@ -1960,8 +1963,8 @@ static const int32_t s_InvokerIndices[649] =
 };
 static const Il2CppTokenRangePair s_rgctxIndices[2] = 
 {
-	{ 0x06000021, { 0, 2 } },
-	{ 0x060000AB, { 2, 5 } },
+	{ 0x06000022, { 0, 2 } },
+	{ 0x060000AC, { 2, 5 } },
 };
 extern const uint32_t g_rgctx_GameObject_AddComponent_TisT_t52F255CDE2D23D1F4CD3CDB79F699B1C6898D30B_mF38017AF1D14FACA1F087D26F5FACA4B95988F48;
 extern const uint32_t g_rgctx_T_t52F255CDE2D23D1F4CD3CDB79F699B1C6898D30B;
@@ -1984,7 +1987,7 @@ IL2CPP_EXTERN_C const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule;
 const Il2CppCodeGenModule g_AssemblyU2DCSharp_CodeGenModule = 
 {
 	"Assembly-CSharp.dll",
-	649,
+	650,
 	s_methodPointers,
 	0,
 	NULL,
